@@ -1,7 +1,13 @@
-﻿namespace JsonMask.NET
+﻿using Newtonsoft.Json.Linq;
+
+namespace JsonMask.NET
 {
-  public class Utils
+  internal class Utils
   {
+
+    public const string TYPE = "Type";
+    public const string IS_WILDCARD = "IsWildcard";
+    public const string PROPERTIES = "Properties";
 
     public static T Shift<T>(IList<T> list)
     {
@@ -31,7 +37,7 @@
       IDictionary<string, object> dictionary = obj as IDictionary<string, object>;
       foreach (var keyValuePair in dictionary)
       {
-        if (Has(obj, keyValuePair.Key))
+        if (HasKey(obj, keyValuePair.Key))
         {
           return false;
         }
@@ -60,6 +66,38 @@
 
       Type objType = obj.GetType();
       return objType.GetProperty(key) != null;
+    }
+
+    public static void Push(dynamic obj, string key, dynamic value)
+    {
+      var propsDictionary = obj as IDictionary<string, object>;
+      propsDictionary[key] = value;
+    }
+
+    public static bool HasKey(dynamic obj, string key)
+    {
+      var expandoDict = obj as IDictionary<string, object>;
+      if (expandoDict != null)
+      {
+        return expandoDict.ContainsKey(key);
+      }
+      return false;
+    }
+
+    public static dynamic GetOrDefault(dynamic obj, string key, dynamic defaultValue = null)
+    {
+      if(Has(obj, key))
+      {
+        return Get(obj, key);
+      }
+
+      return defaultValue;
+    }
+
+    public static dynamic Get(dynamic obj, string key)
+    {
+      var expandoDict = obj as IDictionary<string, object>;
+      return expandoDict[key];
     }
 
   }

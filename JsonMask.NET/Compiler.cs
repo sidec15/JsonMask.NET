@@ -2,34 +2,35 @@
 
 namespace JsonMask.NET
 {
-
-
-  public class Compiler
+  internal class Compiler
   {
 
-    private static readonly IDictionary<char, int> TERMINALS = new Dictionary<char, int>()
+    private static readonly IDictionary<string, int> TERMINALS = new Dictionary<string, int>()
     {
-      { ',', 1 },{ '/', 2 },{ '(', 3 },{ ')', 4 }
+      { ",", 1 },{ "/", 2 },{ "(", 3 },{ ")", 4 }
     };
-    private const char ESCAPE_CHAR = '\\';
-    private const char WILDCARD_CHAR = '*';
+    private const string ESCAPE_CHAR = "\\";
+    private const string WILDCARD_CHAR = "*";
     private const string _N = "_n";
+    private const string HAS_CHILD = "HasChild";
 
-    public object Compile(string text)
+    public static object Compile(string text)
     {
       if (string.IsNullOrEmpty(text))
         return null;
 
       var scanRes = Scan(text);
-      return Parse(scanRes);
+      var parseRes = Parse(scanRes);
+
+      return parseRes;
     }
 
-    private IList<dynamic> Scan(string text)
+    private static IList<dynamic> Scan(string text)
     {
       int len = text.Length;
       IList<dynamic> tokens = new List<dynamic>();
       var name = string.Empty;
-      char ch;
+      string ch;
 
       void MaybePushName()
       {
@@ -43,11 +44,11 @@ namespace JsonMask.NET
 
       for (int i = 0; i < len; i++)
       {
-        ch = text[i];
+        ch = text[i].ToString();
         if (ch == ESCAPE_CHAR)
         {
           i++;
-          ch = text[i];
+          ch = text[i].ToString();
           name += ch == WILDCARD_CHAR ? ESCAPE_CHAR + WILDCARD_CHAR : ch;
         }
         else if (TERMINALS.ContainsKey(ch))
@@ -68,22 +69,24 @@ namespace JsonMask.NET
       return tokens;
     }
 
-    private dynamic Parse(IList<dynamic> tokens)
+    private static dynamic Parse(IList<dynamic> tokens)
     {
-      return BuildTree(tokens, new ExpandoObject());
+      var res = BuildTree(tokens, new ExpandoObject());
+      return res;
     }
 
-    private dynamic BuildTree(IList<dynamic> tokens, dynamic parent)
+    private static dynamic BuildTree(IList<dynamic> tokens, dynamic parent)
     {
       dynamic props = new ExpandoObject();
       dynamic token;
-      while (token = Utils.Shift(tokens) != null)
+      while ((token = Utils.Shift(tokens)) != null)
       {
         if (token.Tag == _N)
         {
           token.Type = "object";
           token.Properties = BuildTree(tokens, token);
-          if (parent.HasChild)
+          var parentDict = parent as IDictionary<string, object>;
+          if (parentDict.ContainsKey(HAS_CHILD))
           {
             AddToken(token, props);
             return props;
@@ -104,23 +107,24 @@ namespace JsonMask.NET
         }
         else if (token.Tag == "/")
         {
-          parent.HasChild = true;
+          Utils.Push(parent, HAS_CHILD, true);
+          //parent[HAS_CHILD] = true;
           continue;
         }
 
         AddToken(token, props);
       }
 
-      return null;
+      return props;
     }
 
-    private void AddToken(dynamic token, dynamic props)
+    private static void AddToken(dynamic token, dynamic props)
     {
       dynamic prop = new ExpandoObject();
       prop.Type = token.Type;
 
       if (token.Value == WILDCARD_CHAR)
-        prop.IsWildcard = true;
+        Utils.Push(prop, Utils.IS_WILDCARD, true);
       else if (token.Value == ESCAPE_CHAR + WILDCARD_CHAR)
         token.Value = WILDCARD_CHAR;
 
@@ -129,7 +133,7 @@ namespace JsonMask.NET
         prop.Properties = token.Properties;
       }
 
-      props[token.value] = prop;
+      Utils.Push(props, token.Value, prop);
     }
 
 

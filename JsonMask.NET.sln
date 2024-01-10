@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonMask.NET", "JsonMask.NET\JsonMask.NET.csproj", "{EF805A33-3F04-4107-AC6C-AB85CFCFBADD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonMask.NET", "JsonMask.NET\JsonMask.NET.csproj", "{EF805A33-3F04-4107-AC6C-AB85CFCFBADD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonMask.NET.Test", "JsonMask.NET.Test\JsonMask.NET.Test.csproj", "{77E904F6-7201-437F-9138-CE2ABCA3C0C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{EF805A33-3F04-4107-AC6C-AB85CFCFBADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF805A33-3F04-4107-AC6C-AB85CFCFBADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF805A33-3F04-4107-AC6C-AB85CFCFBADD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77E904F6-7201-437F-9138-CE2ABCA3C0C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77E904F6-7201-437F-9138-CE2ABCA3C0C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77E904F6-7201-437F-9138-CE2ABCA3C0C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77E904F6-7201-437F-9138-CE2ABCA3C0C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
