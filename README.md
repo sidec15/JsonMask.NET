@@ -1,2 +1,2 @@
-# JsonMask.NET
+# JsonMask.NET ![Tests](https://github.com/sidec15/JsonMask.NET/blob/master/.github/workflows/test.yaml/badge.svg)
 This is a simple DotNet porting of the Javascript library [json-mask](https://github.com/nemtsov/json-mask). It works with the same syntax.
