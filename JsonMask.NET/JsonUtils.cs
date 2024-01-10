@@ -9,8 +9,14 @@ namespace JsonMask.NET
 
     internal static dynamic ConvertJsonToExpando(string jsonString)
     {
-      var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonString);
-      return ConvertJObjectToExpando(jsonObject);
+      var token = JToken.Parse(jsonString);
+
+      return token.Type switch
+      {
+        JTokenType.Object => ConvertJObjectToExpando((JObject)token),
+        JTokenType.Array => ConvertJArrayToExpandoArray((JArray)token),
+        _ => throw new InvalidOperationException("Unsupported JSON token type.")
+      };
     }
 
     private static dynamic ConvertJObjectToExpando(JObject jObject)
@@ -26,7 +32,7 @@ namespace JsonMask.NET
         }
         else if (pair.Value is JArray array)
         {
-          expandoDict[pair.Key] = ConvertJArrayToExpandoList(array);
+          expandoDict[pair.Key] = ConvertJArrayToExpandoArray(array);
         }
         else
         {
@@ -37,7 +43,7 @@ namespace JsonMask.NET
       return expando;
     }
 
-    private static List<dynamic> ConvertJArrayToExpandoList(JArray array)
+    private static dynamic[] ConvertJArrayToExpandoArray(JArray array)
     {
       var expandoList = new List<dynamic>();
       foreach (var item in array)
@@ -51,7 +57,7 @@ namespace JsonMask.NET
           expandoList.Add(item.ToObject<object>());
         }
       }
-      return expandoList;
+      return expandoList.ToArray();
     }
   }
 

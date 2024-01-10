@@ -9,10 +9,11 @@ namespace JsonMask.NET.Test.Extensions
     public static string ToJsonResponseString<T>(this T obj)
     {
       if (obj == null) return "";
-      JsonSerializerOptions options = new()
-      {
-        NumberHandling = JsonNumberHandling.AllowReadingFromString,
-      };
+
+      var options = new JsonSerializerOptions();
+
+      options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+      options.NumberHandling = JsonNumberHandling.AllowReadingFromString;
       options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
       options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 

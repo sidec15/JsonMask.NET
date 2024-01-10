@@ -12,7 +12,7 @@ namespace JsonMask.NET
 
       if (isArray)
       {
-        return _ArrayProperties(obj, compiledMask);
+        return _ArrayProperties((dynamic[]) obj, compiledMask);
       }
 
       return _Properties(obj, compiledMask);
@@ -52,12 +52,10 @@ namespace JsonMask.NET
       return value;
     }
 
-    private static dynamic[] _Array(dynamic obj, string key, dynamic mask)
+    private static dynamic _Array(dynamic obj, string key, dynamic mask)
     {
       IList<dynamic> ret = new List<dynamic>();
-      dynamic[] arr = obj[key];
-      dynamic _object, maskedObj;
-      var l = arr.Length;
+      dynamic arr = Utils.Get(obj, key);
 
       if (!Utils.IsArray(arr))
       {
@@ -68,6 +66,9 @@ namespace JsonMask.NET
       {
         return arr;
       }
+
+      dynamic _object, maskedObj;
+      var l = arr.Length;
 
       for (int i = 0; i < l; i++)
       {
@@ -89,7 +90,7 @@ namespace JsonMask.NET
 
     private static dynamic _Properties(dynamic obj, dynamic mask)
     {
-      if (obj == null || mask == null) // todo_here: original: if (!obj || !mask)
+      if (obj == null || mask == null) // original: if (!obj || !mask)
         return obj;
 
       bool isArray = Utils.IsArray(obj);
@@ -103,10 +104,10 @@ namespace JsonMask.NET
 
       IDictionary<string, object> maskDict = mask as IDictionary<string, object>;
 
-      foreach (var keyValuePair in maskDict)
+      foreach (var maskKvp in maskDict)
       {
-        string key = keyValuePair.Key;
-        dynamic value = keyValuePair.Value;
+        string key = maskKvp.Key;
+        dynamic value = maskKvp.Value;
 
         if (!Utils.HasKey(mask, key))
         {
@@ -118,11 +119,12 @@ namespace JsonMask.NET
         bool isObjectType = type == "object";
         if (Utils.HasKey(value, Utils.IS_WILDCARD))
         {
-          ret = _ForAll(value, mask, isObjectType);
+          var properties = Utils.GetOrDefault(value, Utils.PROPERTIES);
+          ret = _ForAll(obj, properties, isObjectType);
           IDictionary<string, object> retDict = ret as IDictionary<string, object>;
           foreach (var kvp in retDict)
           {
-            if (!Utils.HasKey(maskDict, kvp.Key))
+            if (!Utils.HasKey(ret, kvp.Key))
             {
               continue;
             }

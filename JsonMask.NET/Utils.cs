@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Collections;
 
 namespace JsonMask.NET
 {
@@ -48,7 +49,7 @@ namespace JsonMask.NET
 
     public static bool IsArray(object obj)
     {
-      return obj is Array;
+      return obj is Array || obj is IList;
     }
 
     public static bool IsObject(dynamic obj)
@@ -60,13 +61,13 @@ namespace JsonMask.NET
       return objType.IsSubclassOf(typeof(Delegate)) || objType.IsClass;
     }
 
-    public static bool Has(dynamic obj, string key)
-    {
-      if (obj == null) return false;
+    //public static bool Has(dynamic obj, string key)
+    //{
+    //  if (obj == null) return false;
 
-      Type objType = obj.GetType();
-      return objType.GetProperty(key) != null;
-    }
+    //  Type objType = obj.GetType();
+    //  return objType.GetProperty(key) != null;
+    //}
 
     public static void Push(dynamic obj, string key, dynamic value)
     {
@@ -86,7 +87,7 @@ namespace JsonMask.NET
 
     public static dynamic GetOrDefault(dynamic obj, string key, dynamic defaultValue = null)
     {
-      if(Has(obj, key))
+      if(HasKey(obj, key))
       {
         return Get(obj, key);
       }
