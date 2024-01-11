@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 CodeCoverage
+JsonMask.NET.Test/TestResults

@@ -6,6 +6,7 @@ set -e # Exit on error
 project=JsonMask.NET.Test
 solution="JsonMask.NET.sln"
 coverage_report_title=JsonMask.NET
+report_assembly_filters="-JsonMask.NET.Test"
 # report_assembly_filters="-ExternalServices"
 # report_class_filters="-Repository.Migrations*"
 
@@ -43,19 +44,24 @@ function runCoverage() {
   fi
 
   dotnet build $solution
-  dotnet test --settings $project/coverlet.runsettings
+  # dotnet test --settings $project/coverlet.runsettings
+  dotnet test --settings $project/code-coverage.runsettings
 
   # get the most recent created directory
   local dir_name=$(\ls -t $coverage_base_dir | head -n 1)
   local coverage_output_dir="$coverage_base_dir/$dir_name"
 
   for f in "$coverage_output_dir"/*; do
-    if [[ "$f" == *opencover.xml ]]; then
-      cp $f $coverage_base_dir/coverage-opencover.xml
-    fi
+    # if [[ "$f" == *opencover.xml ]]; then
+    #   cp $f $coverage_base_dir/coverage-opencover.xml
+    # fi
+    if [[ "$f" == *cobertura.xml ]]; then
+      cp $f $coverage_base_dir/coverage-cobertura.xml
+    fi    
   done
 
-  reportgenerator -reports:"$coverage_base_dir/coverage-opencover.xml" -targetdir:"CodeCoverage/output/report" -reporttypes:"TextSummary;Html" -title:$coverage_report_title -assemblyfilters:"$report_assembly_filters" -classfilters:"$report_class_filters"
+  reportgenerator -reports:"$coverage_base_dir/coverage-cobertura.xml" -targetdir:"CodeCoverage/output/report" -reporttypes:"TextSummary;Html" -title:$coverage_report_title -assemblyfilters:"$report_assembly_filters" -classfilters:"$report_class_filters"
+  # reportgenerator -reports:"$coverage_base_dir/coverage-opencover.xml" -targetdir:"CodeCoverage/output/report" -reporttypes:"TextSummary;Html" -title:$coverage_report_title -assemblyfilters:"$report_assembly_filters" -classfilters:"$report_class_filters"
 
 }
 
