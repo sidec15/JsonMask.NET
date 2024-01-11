@@ -22,5 +22,13 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
 
-      - name: Run tests
-        run: dotnet test --no-build
+      # - name: Run tests
+      #   run: dotnet test --no-build
+
+      - name: Run tests and coverage
+        run: dotnet test --settings $project/coverlet.runsettings
+      
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}        

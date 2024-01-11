@@ -1,0 +1,17 @@
+<!-- File name extension must be .runsettings -->
+<RunSettings>
+    <RunConfiguration>
+        <!--<TestCaseFilter>Category!=Stress</Te1stCaseFilter>-->
+        <!--<ResultsDirectory>../CodeCoverage/output</ResultsDirectory>-->
+        <ResultsDirectory>./TestResults/CodeCoverage</ResultsDirectory>
+    </RunConfiguration>
+    <DataCollectionRunSettings>
+        <DataCollectors>
+            <DataCollector friendlyName="XPlat Code Coverage" enabled="True">
+                <Configuration>
+                    <Format>opencover</Format>
+                </Configuration>
+            </DataCollector>
+        </DataCollectors>
+    </DataCollectionRunSettings>
+</RunSettings>
