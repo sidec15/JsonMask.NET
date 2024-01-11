@@ -40,6 +40,11 @@ Included items must then not match any entries in the exclude list to remain inc
                         </Functions>
 
                         <!-- Match the path of the source files in which each method is defined: -->
+                        <Sources>
+                            <Exclude>
+                                <Source>.*\\JsonMask.NET.Test\\.*</Source>
+                            </Exclude>
+                        </Sources>                        
                         <!--<Sources>
                             <Include>
                                 <Source>.*\\WalletServer\\.*</Source>
