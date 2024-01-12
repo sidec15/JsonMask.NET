@@ -1,14 +1,42 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Version>1.0.0</Version>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <!--<Nullable>enable</Nullable>-->
+
+        <PackageId>JsonMask.NET</PackageId>
+        <Authors>sidec</Authors>
+        <!--<Company></Company>-->
+        <Description>
+            This is a simple DotNet porting of the Javascript library json-mask (https://github.com/nemtsov/json-mask). It works with the same syntax.
+        </Description>
+        <PackageTags>json mask partial projection</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/sidec15/JsonMask.NET</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/sidec15/JsonMask.NET</RepositoryUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Title>JsonMask.NET</Title>
+        <IncludeSymbols>True</IncludeSymbols>
+        <PackageIcon>assets/icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
-
+    
+    <ItemGroup>
+        <None Include="../README.md" Pack="true" PackagePath="" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <None Update="assets\icon.png">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
+    
 </Project>

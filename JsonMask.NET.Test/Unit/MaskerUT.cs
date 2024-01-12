@@ -10,10 +10,10 @@ namespace JsonMask.NET.Test.Unit
   {
 
     [Test]
-    public void MaskTest()
+    public void MaskObjTest()
     {
 
-      Assert.That(Masker.Mask(null, string.Empty), Is.Null);
+      Assert.That(Masker.MaskObj(null, string.Empty), Is.Null);
     }
 
   }

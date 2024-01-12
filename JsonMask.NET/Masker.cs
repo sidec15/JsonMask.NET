@@ -1,9 +1,11 @@
-﻿namespace JsonMask.NET
+﻿using Newtonsoft.Json;
+
+namespace JsonMask.NET
 {
-  internal class Masker
+  public class Masker
   {
 
-    public static dynamic Mask(dynamic obj, string mask)
+    public static dynamic MaskObj(dynamic obj, string mask)
     {
       var compiledMask = Compiler.Compile(mask);
 
@@ -16,6 +18,14 @@
 
       return null;
 
+    }
+
+    public static string Mask(string json, string mask)
+    {
+      dynamic obj = JsonUtils.ConvertJsonToExpando(json);
+      dynamic resObj = MaskObj(obj, mask);
+      string response = JsonConvert.SerializeObject(resObj);
+      return response;
     }
 
   }

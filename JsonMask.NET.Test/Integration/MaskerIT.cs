@@ -32,7 +32,6 @@ namespace JsonMask.NET.Test.Integration
       public string Species { get; set; }
     }
 
-
     [Test]
     public void MaskSimpleTest()
     {
@@ -49,19 +48,49 @@ namespace JsonMask.NET.Test.Integration
       dynamic obj = JsonUtils.ConvertJsonToExpando(jsonString);
 
       string mask = "name";
-      var actualObj = Masker.Mask(obj, mask);
+      var actualObj = Masker.MaskObj(obj, mask);
       var actual = JsonConvert.SerializeObject(actualObj);
       var expected = new Person() { Name = person.Name }.ToJsonResponseString();
       Asserts.EqualsJToken(actual, expected);
 
 
       mask = "(name)";
-      actualObj = Masker.Mask(obj, mask);
+      actualObj = Masker.MaskObj(obj, mask);
       actual = JsonConvert.SerializeObject(actualObj);
       expected = new Person() { Name = person.Name }.ToJsonResponseString();
       Asserts.EqualsJToken(actual, expected);
 
     }
+
+    [Test]
+    public void MaskSimpleStringTest()
+    {
+
+      Person person = new()
+      {
+        Name = "foo",
+        Age = 40,
+        HasLicense = true
+      };
+
+      string jsonString = person.ToString();
+
+      string mask = "name";
+      var actual = Masker.Mask(jsonString, mask);
+      //var actual = JsonConvert.SerializeObject(actualObj);
+      var expected = new Person() { Name = person.Name }.ToJsonResponseString();
+      Asserts.EqualsJToken(actual, expected);
+
+
+      mask = "(name)";
+      actual = Masker.Mask(jsonString, mask);
+      //actual = JsonConvert.SerializeObject(actualObj);
+      expected = new Person() { Name = person.Name }.ToJsonResponseString();
+      Asserts.EqualsJToken(actual, expected);
+
+    }
+
+
 
     [Test]
     public void MaskSimpleArrayTest()
@@ -87,7 +116,7 @@ namespace JsonMask.NET.Test.Integration
 
       string mask = "name,age";
 
-      var actualObj = Masker.Mask(obj, mask);
+      var actualObj = Masker.MaskObj(obj, mask);
 
       string actual = JsonConvert.SerializeObject(actualObj);
       string expected = new Person[]
@@ -136,7 +165,7 @@ namespace JsonMask.NET.Test.Integration
       dynamic obj = JsonUtils.ConvertJsonToExpando(jsonString);
 
       string mask = "pet(name)";
-      var actualObj = Masker.Mask(obj, mask);
+      var actualObj = Masker.MaskObj(obj, mask);
       var actual = JsonConvert.SerializeObject(actualObj);
       var expected = new Person()
       {
@@ -148,12 +177,12 @@ namespace JsonMask.NET.Test.Integration
       Asserts.EqualsJToken(actual, expected);
 
       mask = "pet/name";
-      actualObj = Masker.Mask(obj, mask);
+      actualObj = Masker.MaskObj(obj, mask);
       actual = JsonConvert.SerializeObject(actualObj);
       Asserts.EqualsJToken(actual, expected);
 
       mask = "name,age,pet(name,age),children(name,age)";
-      actualObj = Masker.Mask(obj, mask);
+      actualObj = Masker.MaskObj(obj, mask);
       actual = JsonConvert.SerializeObject(actualObj);
       expected = new Person()
       {
@@ -224,7 +253,7 @@ namespace JsonMask.NET.Test.Integration
       dynamic obj = JsonUtils.ConvertJsonToExpando(jsonString);
 
       var mask = "children/*";
-      var actualObj = Masker.Mask(obj, mask);
+      var actualObj = Masker.MaskObj(obj, mask);
       var actual = JsonConvert.SerializeObject(actualObj);
       var expected = new Person()
       {
@@ -237,12 +266,12 @@ namespace JsonMask.NET.Test.Integration
       Asserts.EqualsJToken(actual, expected);
 
       mask = "children(*)";
-      actualObj = Masker.Mask(obj, mask);
+      actualObj = Masker.MaskObj(obj, mask);
       actual = JsonConvert.SerializeObject(actualObj);
       Asserts.EqualsJToken(actual, expected);
 
       mask = "name,age,pet(name,age),children/*";
-      actualObj = Masker.Mask(obj, mask);
+      actualObj = Masker.MaskObj(obj, mask);
       actual = JsonConvert.SerializeObject(actualObj);
       expected = new Person()
       {
@@ -262,7 +291,7 @@ namespace JsonMask.NET.Test.Integration
       Asserts.EqualsJToken(actual, expected);
 
       mask = "*";
-      actualObj = Masker.Mask(obj, mask);
+      actualObj = Masker.MaskObj(obj, mask);
       actual = JsonConvert.SerializeObject(actualObj);
       expected = person.ToJsonResponseString();
       Asserts.EqualsJToken(actual, expected);
