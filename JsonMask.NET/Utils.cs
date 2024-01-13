@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace JsonMask.NET
 {
-  internal class Utils
+  internal static class Utils
   {
 
     public const string TYPE = "Type";
