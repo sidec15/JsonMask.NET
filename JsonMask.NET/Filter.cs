@@ -4,6 +4,8 @@ namespace JsonMask.NET
 {
   internal static class Filter
   {
+    internal static readonly object undefined = new object();
+
     public static dynamic FilterObj(dynamic obj, dynamic compiledMask)
     {
 
@@ -11,10 +13,12 @@ namespace JsonMask.NET
 
       if (isArray)
       {
-        return _ArrayProperties((dynamic[])obj, compiledMask);
+        var arrRes = _ArrayProperties((dynamic[])obj, compiledMask);
+        return arrRes;
       }
 
-      return _Properties(obj, compiledMask);
+      var propRes = _Properties(obj, compiledMask);
+      return propRes;
 
     }
 
@@ -30,24 +34,26 @@ namespace JsonMask.NET
 
       dynamic obj = _Properties(objInt, maskInt);
 
-      if (obj == null) return null;
+      if (obj == null || (object)obj == undefined) return null;
 
       return obj._;
     }
 
     private static dynamic _Object(dynamic obj, string key, dynamic mask)
     {
-      var value = Utils.GetOrDefault(obj, key);
-      if (value != null)
+      var value = Utils.GetOrDefault(obj, key, undefined);
+      if ((object)value != undefined)
       {
         if (Utils.IsArray(value))
         {
-          return _Array(obj, key, mask);
+          var ret = _Array(obj, key, mask);
+          return ret;
         }
 
         if (mask != null)
         {
-          return _Properties(value, mask);
+          var ret = _Properties(value, mask);
+          return ret;
         }
       }
       return value;
@@ -56,13 +62,14 @@ namespace JsonMask.NET
     private static dynamic _Array(dynamic obj, string key, dynamic mask)
     {
       IList<dynamic> ret = new List<dynamic>();
-      dynamic arr = Utils.Get(obj, key);
-      if (arr != null)
+      dynamic arr = Utils.GetOrDefault(obj, key, undefined);
+      if (arr != undefined)
       {
 
         if (!Utils.IsArray(arr))
         {
-          return _Properties(arr, mask);
+          var propResult = _Properties(arr, mask);
+          return propResult;
         }
 
         if (Utils.IsEmpty(arr))
@@ -77,7 +84,9 @@ namespace JsonMask.NET
         {
           _object = arr[i];
           maskedObj = _Properties(_object, mask);
-          if (maskedObj != null)
+          //debug_sdc
+          if ((object)maskedObj != undefined)
+          //if (maskedObj != null && (object)maskedObj != undefined)
           {
             ret.Add(maskedObj);
           }
@@ -90,17 +99,17 @@ namespace JsonMask.NET
 
       }
 
-      return null;
+      return undefined;
     }
 
     private static dynamic _Properties(dynamic obj, dynamic mask)
     {
-      if (obj == null || mask == null) // original: if (!obj || !mask)
+      if ((object)obj == undefined || mask == null) // original: if (!obj || !mask)
         return obj;
 
       bool isArray = Utils.IsArray(obj);
       bool isObject = Utils.IsObject(obj);
-      dynamic maskedObj = null;
+      dynamic maskedObj = undefined;
 
       if (isArray)
         maskedObj = new List<dynamic>();
@@ -129,10 +138,10 @@ namespace JsonMask.NET
           IDictionary<string, object> retDict = ret as IDictionary<string, object>;
           foreach (var kvp in retDict)
           {
-            //if (!Utils.HasKey(ret, kvp.Key))
-            //{
-            //  continue;
-            //}
+            if (!Utils.HasKey(ret, kvp.Key))
+            {
+              continue;
+            }
             Utils.Push(maskedObj, kvp.Key, kvp.Value);
           }
         }
@@ -147,7 +156,7 @@ namespace JsonMask.NET
           {
             ret = _Array(obj, key, maskInt);
           }
-          if (ret != null)
+          if ((object)ret != undefined)
           {
             Utils.Push(maskedObj, key, ret);
           }
@@ -187,7 +196,7 @@ namespace JsonMask.NET
           value = _Array(obj, key, mask);
         }
 
-        if (value != null)
+        if ((object)value != undefined)
         {
           Utils.Push(ret, key, value);
         }

@@ -12,7 +12,7 @@ namespace JsonMask.NET
 
       var compiledMask = Compiler.Compile(mask);
       var res = Filter.FilterObj(obj, compiledMask);
-      if (res != null)
+      if (res != null && (object)res != Filter.undefined)
       {
         return res;
       }

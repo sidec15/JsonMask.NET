@@ -329,81 +329,55 @@ namespace JsonMask.NET.Test.Integration
     }
 
     [Test]
-    public void PropertyNotInObjTest()
-    {
-
-      Person person = new()
-      {
-        Name = "foo",
-        Age = 40,
-        HasLicense = true
-      };
-
-      string jsonString = person.ToString();
-
-      dynamic obj = JsonUtils.ConvertJsonToExpando(jsonString);
-
-      string mask = "prop";
-      KeyNotFoundException ex = Assert.Throws<KeyNotFoundException>(delegate
-      {
-        Masker.MaskObj(obj, mask);
-      });
-      Assert.That(ex.Message, Is.EqualTo("The specified key 'prop' does not exist in the ExpandoObject."));
-
-    }
-
-    [Test]
     public void BatteryTests()
     {
       string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fixture", "activities.json");
       string fixture = File.ReadAllText(filePath);
 
-      //Assert.That(Masker.Mask(null, "a"), Is.Null);
-      //Asserts.EqualsJToken(Masker.Mask("{ b: 1 }", "a"), "{}");
-      //todo_ere: find a way to get key with null value
+      Assert.That(Masker.Mask(null, "a"), Is.Null);
+      Asserts.EqualsJToken(Masker.Mask("{ b: 1 }", "a"), "{}");
       Asserts.EqualsJToken(Masker.Mask("{ a: null, b: 1 }", "a"), "{ a: null }");
-      //Asserts.EqualsJToken(Masker.Mask("[{ b: 1 }]", "a"), "[{}]");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: 1 }", null), "{ a: 1 }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: 1 }", ""), "{ a: 1 }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: 1, b: 1 }", "a"), "{ a: 1 }");
-      //Asserts.EqualsJToken(Masker.Mask("{ notEmptyStr: '' }", "notEmptyStr"), "{ notEmptyStr: '' }");
-      //Asserts.EqualsJToken(Masker.Mask("{ notEmptyNum: 0 }", "notEmptyNum"), "{ notEmptyNum: 0 }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: 1, b: 1, c: 1 }", "a,b"), "{ a: 1, b: 1 }");
-      //Asserts.EqualsJToken(Masker.Mask("{ obj: { s: 1, t: 2 }, b: 1 }", "obj/s"), "{ obj: { s: 1 } }");
-      //Asserts.EqualsJToken(Masker.Mask("{ arr: [{ s: 1, t: 2 }, { s: 2, t: 3 }], b: 1 }", "arr/s"), "{ arr: [{ s: 1 }, { s: 2 }] }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: { s: { g: 1, z: 1 } }, t: 2, b: 1 }", "a/s/g,b"), "{ a: { s: { g: 1 } }, b: 1 }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: 2, b: null, c: 0, d: 3 }", "*"), "{ a: 2, b: null, c: 0, d: 3 }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: { s: { g: 3 }, t: { g: 4 }, u: { z: 1 } }, b: 1 }", "a/*/g"), "{ a: { s: { g: 3 }, t: { g: 4 }, u: {} } }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: { s: { g: 3 }, t: { g: 4 }, u: { z: 1 } }, b: 3 }", "a/*"), "{ a: { s: { g: 3 }, t: { g: 4 }, u: { z: 1 } } }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: [{ g: 1, d: 2 }, { g: 2, d: 3 }] }", "a(g)"), "{ a: [{ g: 1 }, { g: 2 }] }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: [], c: {} }", "a,c"), "{ a: [], c: {} }");
-      //Asserts.EqualsJToken(Masker.Mask("{ b: [{ d: { g: { z: 22 }, b: 34 } }] }", "b(d/*/z)"), "{ b: [{ d: { g: { z: 22 } } }] }");
-      //Asserts.EqualsJToken(Masker.Mask("{ url: 1, id: '1', obj: { url: 'h', a: [{ url: 1, z: 2 }], c: 3 } }", "url,obj(url,a/url)"), " url: 1, obj: { url: 'h', a: [{ url: 1 }] } }");
-      //Asserts.EqualsJToken(Masker.Mask("{ p1: { a: 1, b: 1, c: 1 }, p2: { a: 2, b: 2, c: 2 } }", "*(a,b)"), "{ p1: { a: 1, b: 1 }, p2: { a: 2, b: 2 } }");
-      //Asserts.EqualsJToken(Masker.Mask(fixture, "kind"), "{ kind: 'plus#activity' }");
-      //Asserts.EqualsJToken(Masker.Mask("object", "object(objectType)"), "expected");
-      //Asserts.EqualsJToken(Masker.Mask(fixture, "mask"), "{ object: { objectType: 'note' } }");
-      //Asserts.EqualsJToken(Masker.Mask(fixture, "url,object(content,attachments/url)"), "{url:'https://plus.google.com/102817283354809142195/posts/F97fqZwJESL',object:{content:'Congratulations! You have successfully fetched an explicit public activity. The attached video is your reward. :)',attachments:[{url:'http://www.youtube.com/watch?v=dQw4w9WgXcQ'}]}}}");
-      //Asserts.EqualsJToken(Masker.Mask("[{ i: 1, o: 2 }, { i: 2, o: 2 }]", "i"), "[{ i: 1 }, { i: 2 }]");
-      //Asserts.EqualsJToken(Masker.Mask("{ foo: { biz: 'bar' } }", "foo(bar)"), "{ foo: {} }");
-      //Asserts.EqualsJToken(Masker.Mask("{ foo: { biz: 'baz' } }", "foo(bar)"), "{ foo: {} }");
-      //Asserts.EqualsJToken(Masker.Mask("{ foobar: { foo: 'bar' }, foobiz: undefined }", "foobar,foobiz"), "{ foobar: { foo: 'bar' } }");
-      //Asserts.EqualsJToken(Masker.Mask("{ foo: 'bar' }", "foobar"), "{}");
-      //Asserts.EqualsJToken(Masker.Mask("[{ biz: 'baz' }]", "foobar"), "[{}]");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: [0, 0] }", "a"), "{ a: [0, 0] }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: [1, 0, 1] }", "a"), "{ a: [1, 0, 1] }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: [{ b: { c: 1 } }, { d: 2 }], e: 3, f: 4, g: 5 }", "a(b/c),e"), "{ a: [{ b: { c: 1 } }, {}], e: 3 }");
-      //Asserts.EqualsJToken(Masker.Mask("{ a: [{ b: { c: { d: 1 } } }, { d: 2 }], e: 3, f: 4, g: 5 }", "a(b/c/d),e"), "{ a: [{ b: { c: { d: 1 } } }, {}], e: 3 }");
-      //Asserts.EqualsJToken(Masker.Mask("{alpha:3,beta:{first:'fv',second:{third:'tv',fourth:'fv'}},cappa:{first:'fv',second:{third:'tv',fourth:'fv'}}}", "beta(first,second/third),cappa(first,second/third)"), "{beta:{first:'fv',second:{third:'tv'}},cappa:{first:'fv',second:{third:'tv'}}}");
-      //Asserts.EqualsJToken(Masker.Mask("{ 'a/b': 1, c: 2 }", "a\\/b"), "{ 'a/b': 1 }");
-      //Asserts.EqualsJToken(Masker.Mask("{alpha:3,beta:{first:'fv','second/third':'tv',third:{fourth:'fv'}},cappa:{first:'fv','second/third':'tv',third:{fourth:'fv'}}}", "beta(first,second\\/third),cappa(first,second\\/third)"), "{beta:{first:'fv','second/third':'tv'},cappa:{first:'fv','second/third':'tv'}}");
-      //Asserts.EqualsJToken(Masker.Mask("{ '*': 101, beta: 'hidden' }", "\\*"), "{ '*': 101 }");
-      //Asserts.EqualsJToken(Masker.Mask("{ first: { '*': 101, beta: 'hidden' } }", "first(\\*)"), "{ first: { '*': 101 } }");
-      //Asserts.EqualsJToken(Masker.Mask("{ '*': 101, beta: 'hidden', some: 'visible' }", "some,\\*"), "{ '*': 101, some: 'visible' }");
-      //Asserts.EqualsJToken(Masker.Mask("{ '\\': 120, beta: 'hidden', some: 'visible' }", "some,\\\\"), "{ '\\': 120, some: 'visible' }");
-      //Asserts.EqualsJToken(Masker.Mask("{ multi: 130, line: 131, 'multi\nline': { a: 135, b: 134 } }", "multi\nline(a)"), "{ 'multi\nline': { a: 135 } }");
-      //Asserts.EqualsJToken(Masker.Mask("{ 'a*': 1, b: 2 }", "a*"), "{ 'a*': 1 }");
-      //Asserts.EqualsJToken(Masker.Mask("{ '*a': 1, b: 2 }", "*a"), "{ '*a': 1 }");
+      Asserts.EqualsJToken(Masker.Mask("[{ b: 1 }]", "a"), "[{}]");
+      Asserts.EqualsJToken(Masker.Mask("{ a: 1 }", null), "{ a: 1 }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: 1 }", ""), "{ a: 1 }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: 1, b: 1 }", "a"), "{ a: 1 }");
+      Asserts.EqualsJToken(Masker.Mask("{ notEmptyStr: '' }", "notEmptyStr"), "{ notEmptyStr: '' }");
+      Asserts.EqualsJToken(Masker.Mask("{ notEmptyNum: 0 }", "notEmptyNum"), "{ notEmptyNum: 0 }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: 1, b: 1, c: 1 }", "a,b"), "{ a: 1, b: 1 }");
+      Asserts.EqualsJToken(Masker.Mask("{ obj: { s: 1, t: 2 }, b: 1 }", "obj/s"), "{ obj: { s: 1 } }");
+      Asserts.EqualsJToken(Masker.Mask("{ arr: [{ s: 1, t: 2 }, { s: 2, t: 3 }], b: 1 }", "arr/s"), "{ arr: [{ s: 1 }, { s: 2 }] }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: { s: { g: 1, z: 1 } }, t: 2, b: 1 }", "a/s/g,b"), "{ a: { s: { g: 1 } }, b: 1 }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: 2, b: null, c: 0, d: 3 }", "*"), "{ a: 2, b: null, c: 0, d: 3 }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: { s: { g: 3 }, t: { g: 4 }, u: { z: 1 } }, b: 1 }", "a/*/g"), "{ a: { s: { g: 3 }, t: { g: 4 }, u: {} } }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: { s: { g: 3 }, t: { g: 4 }, u: { z: 1 } }, b: 3 }", "a/*"), "{ a: { s: { g: 3 }, t: { g: 4 }, u: { z: 1 } } }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: [{ g: 1, d: 2 }, { g: 2, d: 3 }] }", "a(g)"), "{ a: [{ g: 1 }, { g: 2 }] }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: [], c: {} }", "a,c"), "{ a: [], c: {} }");
+      Asserts.EqualsJToken(Masker.Mask("{ b: [{ d: { g: { z: 22 }, b: 34 } }] }", "b(d/*/z)"), "{ b: [{ d: { g: { z: 22 } } }] }");
+      Asserts.EqualsJToken(Masker.Mask("{ url: 1, id: '1', obj: { url: 'h', a: [{ url: 1, z: 2 }], c: 3 } }", "url,obj(url,a/url)"), "{ url: 1, obj: { url: 'h', a: [{ url: 1 }] } }");
+      Asserts.EqualsJToken(Masker.Mask("{ p1: { a: 1, b: 1, c: 1 }, p2: { a: 2, b: 2, c: 2 } }", "*(a,b)"), "{ p1: { a: 1, b: 1 }, p2: { a: 2, b: 2 } }");
+      Asserts.EqualsJToken(Masker.Mask(fixture, "kind"), "{ kind: 'plus#activity' }");
+      Asserts.EqualsJToken(Masker.Mask(fixture, "object(objectType)"), "{ object: { objectType: 'note' } }");
+      Asserts.EqualsJToken(Masker.Mask(fixture, "url,object(content,attachments/url)"), "{url:'https://plus.google.com/102817283354809142195/posts/F97fqZwJESL',object:{content:'Congratulations! You have successfully fetched an explicit public activity. The attached video is your reward. :)',attachments:[{url:'http://www.youtube.com/watch?v=dQw4w9WgXcQ'}]}}");
+      Asserts.EqualsJToken(Masker.Mask("[{ i: 1, o: 2 }, { i: 2, o: 2 }]", "i"), "[{ i: 1 }, { i: 2 }]");
+      Asserts.EqualsJToken(Masker.Mask("{ foo: { biz: 'bar' } }", "foo(bar)"), "{ foo: {} }");
+      Asserts.EqualsJToken(Masker.Mask("{ foo: { biz: 'baz' } }", "foo(bar)"), "{ foo: {} }");
+      Asserts.EqualsJToken(Masker.Mask("{ foobar: { foo: 'bar' }, foobiz: 1 }", "foobar,foobiz"), "{ foobar: { foo: 'bar' }, foobiz: 1 }");
+      Asserts.EqualsJToken(Masker.Mask("{ foo: 'bar' }", "foobar"), "{}");
+      Asserts.EqualsJToken(Masker.Mask("[{ biz: 'baz' }]", "foobar"), "[{}]");
+      Asserts.EqualsJToken(Masker.Mask("{ a: [0, 0] }", "a"), "{ a: [0, 0] }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: [1, 0, 1] }", "a"), "{ a: [1, 0, 1] }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: [{ b: { c: 1 } }, { d: 2 }], e: 3, f: 4, g: 5 }", "a(b/c),e"), "{ a: [{ b: { c: 1 } }, {}], e: 3 }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: [{ b: { c: { d: 1 } } }, { d: 2 }], e: 3, f: 4, g: 5 }", "a(b/c/d),e"), "{ a: [{ b: { c: { d: 1 } } }, {}], e: 3 }");
+      Asserts.EqualsJToken(Masker.Mask("{alpha:3,beta:{first:'fv',second:{third:'tv',fourth:'fv'}},cappa:{first:'fv',second:{third:'tv',fourth:'fv'}}}", "beta(first,second/third),cappa(first,second/third)"), "{beta:{first:'fv',second:{third:'tv'}},cappa:{first:'fv',second:{third:'tv'}}}");
+      Asserts.EqualsJToken(Masker.Mask("{ 'a/b': 1, c: 2 }", "a\\/b"), "{ 'a/b': 1 }");
+      Asserts.EqualsJToken(Masker.Mask("{alpha:3,beta:{first:'fv','second/third':'tv',third:{fourth:'fv'}},cappa:{first:'fv','second/third':'tv',third:{fourth:'fv'}}}", "beta(first,second\\/third),cappa(first,second\\/third)"), "{beta:{first:'fv','second/third':'tv'},cappa:{first:'fv','second/third':'tv'}}");
+      Asserts.EqualsJToken(Masker.Mask("{ '*': 101, beta: 'hidden' }", "\\*"), "{ '*': 101 }");
+      Asserts.EqualsJToken(Masker.Mask("{ first: { '*': 101, beta: 'hidden' } }", "first(\\*)"), "{ first: { '*': 101 } }");
+      Asserts.EqualsJToken(Masker.Mask("{ '*': 101, beta: 'hidden', some: 'visible' }", "some,\\*"), "{ '*': 101, some: 'visible' }");
+      Asserts.EqualsJToken(Masker.Mask("{ '\\\\': 120, beta: 'hidden', some: 'visible' }", "some,\\\\"), "{ '\\\\': 120, some: 'visible' }");
+      Asserts.EqualsJToken(Masker.Mask("{ multi: 130, line: 131, 'multi\nline': { a: 135, b: 134 } }", "multi\nline(a)"), "{ 'multi\nline': { a: 135 } }");
+      Asserts.EqualsJToken(Masker.Mask("{ 'a*': 1, b: 2 }", "a*"), "{ 'a*': 1 }");
+      Asserts.EqualsJToken(Masker.Mask("{ '*a': 1, b: 2 }", "*a"), "{ '*a': 1 }");
 
     }
 
