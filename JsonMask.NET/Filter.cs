@@ -1,10 +1,13 @@
-﻿using System;
-using System.Dynamic;
+﻿using System.Dynamic;
 
 namespace JsonMask.NET
 {
-  internal class Filter
+  internal static class Filter
   {
+    private const string ARRAY = "array";
+    private const string OBJECT = "object";
+    internal static readonly object undefined = new();
+
     public static dynamic FilterObj(dynamic obj, dynamic compiledMask)
     {
 
@@ -12,10 +15,12 @@ namespace JsonMask.NET
 
       if (isArray)
       {
-        return _ArrayProperties((dynamic[]) obj, compiledMask);
+        var arrRes = _ArrayProperties((dynamic[])obj, compiledMask);
+        return arrRes;
       }
 
-      return _Properties(obj, compiledMask);
+      var propRes = _Properties(obj, compiledMask);
+      return propRes;
 
     }
 
@@ -23,7 +28,7 @@ namespace JsonMask.NET
     {
       dynamic maskInt = new ExpandoObject();
       maskInt._ = new ExpandoObject();
-      maskInt._.Type = "array";
+      maskInt._.Type = ARRAY;
       maskInt._.Properties = mask;
 
       dynamic objInt = new ExpandoObject();
@@ -31,75 +36,82 @@ namespace JsonMask.NET
 
       dynamic obj = _Properties(objInt, maskInt);
 
-      if (obj == null) return null;
+      if (obj == null || (object)obj == undefined) return null;
 
       return obj._;
     }
 
     private static dynamic _Object(dynamic obj, string key, dynamic mask)
     {
-      var value = Utils.Get(obj, key);
-      if (Utils.IsArray(value))
+      var value = Utils.GetOrDefault(obj, key, undefined);
+      if ((object)value != undefined)
       {
-        return _Array(obj, key, mask);
-      }
+        if (Utils.IsArray(value))
+        {
+          var ret = _Array(obj, key, mask);
+          return ret;
+        }
 
-      if (mask != null)
-      {
-        return _Properties(value, mask);
+        if (mask != null)
+        {
+          var ret = _Properties(value, mask);
+          return ret;
+        }
       }
-
       return value;
     }
 
     private static dynamic _Array(dynamic obj, string key, dynamic mask)
     {
       IList<dynamic> ret = new List<dynamic>();
-      dynamic arr = Utils.Get(obj, key);
-
-      if (!Utils.IsArray(arr))
+      dynamic arr = Utils.GetOrDefault(obj, key, undefined);
+      if (arr != undefined)
       {
-        return _Properties(arr, mask);
-      }
 
-      if (Utils.IsEmpty(arr))
-      {
-        return arr;
-      }
-
-      dynamic _object, maskedObj;
-      var l = arr.Length;
-
-      for (int i = 0; i < l; i++)
-      {
-        _object = arr[i];
-        maskedObj = _Properties(_object, mask);
-        if (maskedObj != null)
+        if (!Utils.IsArray(arr))
         {
-          ret.Add(maskedObj);
+          var propResult = _Properties(arr, mask);
+          return propResult;
         }
+
+        if (Utils.IsEmpty(arr))
+        {
+          return arr;
+        }
+
+        dynamic _object, maskedObj;
+        var l = arr.Length;
+
+        for (int i = 0; i < l; i++)
+        {
+          _object = arr[i];
+          maskedObj = _Properties(_object, mask);
+          if ((object)maskedObj != undefined)
+          //if (maskedObj != null && (object)maskedObj != undefined)
+          {
+            ret.Add(maskedObj);
+          }
+        }
+
+        if (ret.Any())
+        {
+          return ret.ToArray();
+        }
+
       }
 
-      if (ret.Any())
-      {
-        return ret.ToArray();
-      }
-
-      return null;
+      return undefined;
     }
 
     private static dynamic _Properties(dynamic obj, dynamic mask)
     {
-      if (obj == null || mask == null) // original: if (!obj || !mask)
+      if ((object)obj == undefined || mask == null) // original: if (!obj || !mask)
         return obj;
 
-      bool isArray = Utils.IsArray(obj);
       bool isObject = Utils.IsObject(obj);
-      dynamic maskedObj = null;
+      dynamic maskedObj = undefined;
 
-      if (isArray)
-        maskedObj = new List<dynamic>();
-      else if (isObject)
+      if (isObject)
         maskedObj = new ExpandoObject();
 
       IDictionary<string, object> maskDict = mask as IDictionary<string, object>;
@@ -109,14 +121,14 @@ namespace JsonMask.NET
         string key = maskKvp.Key;
         dynamic value = maskKvp.Value;
 
-        if (!Utils.HasKey(mask, key))
-        {
-          continue;
-        }
+        //if (!Utils.HasKey(mask, key))
+        //{
+        //  continue;
+        //}
 
         dynamic ret = null;
         string type = Utils.Get(value, Utils.TYPE);
-        bool isObjectType = type == "object";
+        bool isObjectType = type == OBJECT;
         if (Utils.HasKey(value, Utils.IS_WILDCARD))
         {
           var properties = Utils.GetOrDefault(value, Utils.PROPERTIES);
@@ -124,10 +136,10 @@ namespace JsonMask.NET
           IDictionary<string, object> retDict = ret as IDictionary<string, object>;
           foreach (var kvp in retDict)
           {
-            if (!Utils.HasKey(ret, kvp.Key))
-            {
-              continue;
-            }
+            //if (!Utils.HasKey(ret, kvp.Key))
+            //{
+            //  continue;
+            //}
             Utils.Push(maskedObj, kvp.Key, kvp.Value);
           }
         }
@@ -142,16 +154,13 @@ namespace JsonMask.NET
           {
             ret = _Array(obj, key, maskInt);
           }
-          if (ret != null)
+          if ((object)ret != undefined)
           {
             Utils.Push(maskedObj, key, ret);
           }
         }
 
       }
-
-      if (isArray)
-        return ((IList<dynamic>)maskedObj).ToArray();
 
       return maskedObj;
     }
@@ -167,10 +176,10 @@ namespace JsonMask.NET
         string key = keyValuePair.Key;
         //object value = keyValuePair.Value;
 
-        if (!Utils.HasKey(obj, key))
-        {
-          continue;
-        }
+        //if (!Utils.HasKey(obj, key))
+        //{
+        //  continue;
+        //}
 
         dynamic value;
         if (isObjectType)
@@ -182,7 +191,7 @@ namespace JsonMask.NET
           value = _Array(obj, key, mask);
         }
 
-        if (value != null)
+        if ((object)value != undefined)
         {
           Utils.Push(ret, key, value);
         }

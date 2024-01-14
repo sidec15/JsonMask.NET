@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Collections;
+﻿using System.Collections;
 
 namespace JsonMask.NET
 {
-  internal class Utils
+  internal static class Utils
   {
 
     public const string TYPE = "Type";
@@ -37,12 +36,10 @@ namespace JsonMask.NET
 
       IDictionary<string, object> dictionary = obj as IDictionary<string, object>;
       foreach (var keyValuePair in dictionary)
-      {
         if (HasKey(obj, keyValuePair.Key))
         {
           return false;
         }
-      }
 
       return true;
     }
@@ -87,7 +84,7 @@ namespace JsonMask.NET
 
     public static dynamic GetOrDefault(dynamic obj, string key, dynamic defaultValue = null)
     {
-      if(HasKey(obj, key))
+      if (HasKey(obj, key))
       {
         return Get(obj, key);
       }

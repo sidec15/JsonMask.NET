@@ -2,7 +2,7 @@
 
 namespace JsonMask.NET
 {
-  internal class Compiler
+  internal static class Compiler
   {
 
     private static readonly IDictionary<string, int> TERMINALS = new Dictionary<string, int>()
