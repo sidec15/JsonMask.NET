@@ -86,7 +86,6 @@ namespace JsonMask.NET
         {
           _object = arr[i];
           maskedObj = _Properties(_object, mask);
-          //debug_sdc
           if ((object)maskedObj != undefined)
           //if (maskedObj != null && (object)maskedObj != undefined)
           {
@@ -109,13 +108,10 @@ namespace JsonMask.NET
       if ((object)obj == undefined || mask == null) // original: if (!obj || !mask)
         return obj;
 
-      bool isArray = Utils.IsArray(obj);
       bool isObject = Utils.IsObject(obj);
       dynamic maskedObj = undefined;
 
-      if (isArray)
-        maskedObj = new List<dynamic>();
-      else if (isObject)
+      if (isObject)
         maskedObj = new ExpandoObject();
 
       IDictionary<string, object> maskDict = mask as IDictionary<string, object>;
@@ -165,9 +161,6 @@ namespace JsonMask.NET
         }
 
       }
-
-      if (isArray)
-        return ((IList<dynamic>)maskedObj).ToArray();
 
       return maskedObj;
     }

@@ -342,6 +342,8 @@ namespace JsonMask.NET.Test.Integration
       Asserts.EqualsJToken(Masker.Mask("{ a: 1 }", null), "{ a: 1 }");
       Asserts.EqualsJToken(Masker.Mask("{ a: 1 }", ""), "{ a: 1 }");
       Asserts.EqualsJToken(Masker.Mask("{ a: 1, b: 1 }", "a"), "{ a: 1 }");
+      Asserts.EqualsJToken(Masker.Mask("{ a: { b: 1, c: 2 } }", "a(d(e,f))"), "{a: {}}");
+      Asserts.EqualsJToken(Masker.Mask("{ a: [1, 2] }", "a(b(d,e))"), "{}");
       Asserts.EqualsJToken(Masker.Mask("{ notEmptyStr: '' }", "notEmptyStr"), "{ notEmptyStr: '' }");
       Asserts.EqualsJToken(Masker.Mask("{ notEmptyNum: 0 }", "notEmptyNum"), "{ notEmptyNum: 0 }");
       Asserts.EqualsJToken(Masker.Mask("{ a: 1, b: 1, c: 1 }", "a,b"), "{ a: 1, b: 1 }");
