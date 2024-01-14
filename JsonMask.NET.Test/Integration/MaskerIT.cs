@@ -336,6 +336,7 @@ namespace JsonMask.NET.Test.Integration
 
       Assert.That(Masker.Mask(null, "a"), Is.Null);
       Asserts.EqualsJToken(Masker.Mask("{ b: 1 }", "a"), "{}");
+      Asserts.EqualsJToken(Masker.Mask("{ b: 1 }", "a"), "{}");
       Asserts.EqualsJToken(Masker.Mask("{ a: null, b: 1 }", "a"), "{ a: null }");
       Asserts.EqualsJToken(Masker.Mask("[{ b: 1 }]", "a"), "[{}]");
       Asserts.EqualsJToken(Masker.Mask("{ a: 1 }", null), "{ a: 1 }");

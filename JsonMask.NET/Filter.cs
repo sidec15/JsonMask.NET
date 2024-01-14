@@ -123,10 +123,10 @@ namespace JsonMask.NET
         string key = maskKvp.Key;
         dynamic value = maskKvp.Value;
 
-        if (!Utils.HasKey(mask, key))
-        {
-          continue;
-        }
+        //if (!Utils.HasKey(mask, key))
+        //{
+        //  continue;
+        //}
 
         dynamic ret = null;
         string type = Utils.Get(value, Utils.TYPE);
@@ -138,10 +138,10 @@ namespace JsonMask.NET
           IDictionary<string, object> retDict = ret as IDictionary<string, object>;
           foreach (var kvp in retDict)
           {
-            if (!Utils.HasKey(ret, kvp.Key))
-            {
-              continue;
-            }
+            //if (!Utils.HasKey(ret, kvp.Key))
+            //{
+            //  continue;
+            //}
             Utils.Push(maskedObj, kvp.Key, kvp.Value);
           }
         }

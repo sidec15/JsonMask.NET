@@ -12,18 +12,13 @@ namespace JsonMask.NET
 
       var compiledMask = Compiler.Compile(mask);
       var res = Filter.FilterObj(obj, compiledMask);
-      if (res != null && (object)res != Filter.undefined)
-      {
-        return res;
-      }
-
-      return null;
+      return res;
 
     }
 
     public static string Mask(string json, string mask)
     {
-      if(json == null) return null;
+      if (json == null) return null;
       dynamic obj = JsonUtils.ConvertJsonToExpando(json);
       dynamic resObj = MaskObj(obj, mask);
       string response = JsonConvert.SerializeObject(resObj);
