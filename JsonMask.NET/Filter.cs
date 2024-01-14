@@ -4,7 +4,9 @@ namespace JsonMask.NET
 {
   internal static class Filter
   {
-    internal static readonly object undefined = new object();
+    private const string ARRAY = "array";
+    private const string OBJECT = "object";
+    internal static readonly object undefined = new();
 
     public static dynamic FilterObj(dynamic obj, dynamic compiledMask)
     {
@@ -26,7 +28,7 @@ namespace JsonMask.NET
     {
       dynamic maskInt = new ExpandoObject();
       maskInt._ = new ExpandoObject();
-      maskInt._.Type = "array";
+      maskInt._.Type = ARRAY;
       maskInt._.Properties = mask;
 
       dynamic objInt = new ExpandoObject();
@@ -130,7 +132,7 @@ namespace JsonMask.NET
 
         dynamic ret = null;
         string type = Utils.Get(value, Utils.TYPE);
-        bool isObjectType = type == "object";
+        bool isObjectType = type == OBJECT;
         if (Utils.HasKey(value, Utils.IS_WILDCARD))
         {
           var properties = Utils.GetOrDefault(value, Utils.PROPERTIES);
