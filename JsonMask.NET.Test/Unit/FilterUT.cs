@@ -90,5 +90,11 @@ namespace JsonMask.NET.Test.Unit
 
     }
 
+    [Test]
+    public void ObjUndefinedTest()
+    {
+      Assert.That(Filter.FilterObj(Filter.undefined, null), Is.EqualTo(Filter.undefined));
+    }
+
   }
 }

@@ -25,11 +25,7 @@ namespace JsonMask.NET
     {
       if (obj == null)
         return true;
-      if (IsArray(obj))
-      {
-        return obj.Length == 0;
-      }
-      if (obj is string)
+      if (IsArray(obj) || obj is string)
       {
         return obj.Length == 0;
       }

@@ -36,9 +36,8 @@ namespace JsonMask.NET
 
       dynamic obj = _Properties(objInt, maskInt);
 
-      if (obj == null || (object)obj == undefined) return null;
-
       return obj._;
+
     }
 
     private static dynamic _Object(dynamic obj, string key, dynamic mask)
@@ -103,10 +102,19 @@ namespace JsonMask.NET
       return undefined;
     }
 
-    private static dynamic _Properties(dynamic obj, dynamic mask)
+    internal static dynamic _Properties(dynamic obj, dynamic mask)
     {
-      if ((object)obj == undefined || mask == null) // original: if (!obj || !mask)
+      // original: if (!obj || !mask)
+
+      if ((object)obj == undefined)
+      {
         return obj;
+      }
+
+      if (mask == null)
+      {
+        return obj;
+      }
 
       bool isObject = Utils.IsObject(obj);
       dynamic maskedObj = undefined;
