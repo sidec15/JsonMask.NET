@@ -1,4 +1,6 @@
 ﻿
+using NUnit.Framework;
+
 namespace JsonMask.NET.Test.Unit
 {
   internal class MaskerServiceUT
@@ -8,7 +10,11 @@ namespace JsonMask.NET.Test.Unit
     public void MaskTest()
     {
       IMaskerService maskerService = new MaskerService();
-      Asserts.EqualsJToken(maskerService.Mask("{ a: 1, b: 1 }", "a"), "{ a: 1 }");
+      var original = "{ a: 1, b: 1 }";
+      var mask = "a";
+      var result = maskerService.Mask(original, mask);
+      Console.WriteLine(result); // result is: "{ a: 1 }"
+      Asserts.EqualsJToken(result, "{ a: 1 }");
     }
 
   }
