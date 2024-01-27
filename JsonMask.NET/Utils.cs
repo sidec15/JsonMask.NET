@@ -54,14 +54,6 @@ namespace JsonMask.NET
       return objType.IsSubclassOf(typeof(Delegate)) || objType.IsClass;
     }
 
-    //public static bool Has(dynamic obj, string key)
-    //{
-    //  if (obj == null) return false;
-
-    //  Type objType = obj.GetType();
-    //  return objType.GetProperty(key) != null;
-    //}
-
     public static void Push(dynamic obj, string key, dynamic value)
     {
       var propsDictionary = obj as IDictionary<string, object>;
